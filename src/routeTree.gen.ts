@@ -10,33 +10,167 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CapacidadesRouteImport } from './routes/capacidades'
+import { Route as ContactoRouteImport } from './routes/contacto'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as EmpresaRouteImport } from './routes/empresa'
+import { Route as GobiernoCorporativoRouteImport } from './routes/gobierno-corporativo'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
+import { Route as ProyectosRouteImport } from './routes/proyectos'
+import { Route as TerminosRouteImport } from './routes/terminos'
+import { Route as EmpresasIndexRouteImport } from './routes/empresas.index'
+import { Route as EmpresasSlugRouteImport } from './routes/empresas.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CapacidadesRoute = CapacidadesRouteImport.update({
+  id: '/capacidades',
+  path: '/capacidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresaRoute = EmpresaRouteImport.update({
+  id: '/empresa',
+  path: '/empresa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GobiernoCorporativoRoute = GobiernoCorporativoRouteImport.update({
+  id: '/gobierno-corporativo',
+  path: '/gobierno-corporativo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProyectosRoute = ProyectosRouteImport.update({
+  id: '/proyectos',
+  path: '/proyectos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresasIndexRoute = EmpresasIndexRouteImport.update({
+  id: '/empresas/',
+  path: '/empresas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresasSlugRoute = EmpresasSlugRouteImport.update({
+  id: '/empresas/$slug',
+  path: '/empresas/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/capacidades': typeof CapacidadesRoute
+  '/contacto': typeof ContactoRoute
+  '/cookies': typeof CookiesRoute
+  '/empresa': typeof EmpresaRoute
+  '/gobierno-corporativo': typeof GobiernoCorporativoRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/proyectos': typeof ProyectosRoute
+  '/terminos': typeof TerminosRoute
+  '/empresas/$slug': typeof EmpresasSlugRoute
+  '/empresas/': typeof EmpresasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/capacidades': typeof CapacidadesRoute
+  '/contacto': typeof ContactoRoute
+  '/cookies': typeof CookiesRoute
+  '/empresa': typeof EmpresaRoute
+  '/gobierno-corporativo': typeof GobiernoCorporativoRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/proyectos': typeof ProyectosRoute
+  '/terminos': typeof TerminosRoute
+  '/empresas/$slug': typeof EmpresasSlugRoute
+  '/empresas': typeof EmpresasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/capacidades': typeof CapacidadesRoute
+  '/contacto': typeof ContactoRoute
+  '/cookies': typeof CookiesRoute
+  '/empresa': typeof EmpresaRoute
+  '/gobierno-corporativo': typeof GobiernoCorporativoRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/proyectos': typeof ProyectosRoute
+  '/terminos': typeof TerminosRoute
+  '/empresas/$slug': typeof EmpresasSlugRoute
+  '/empresas/': typeof EmpresasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/capacidades'
+    | '/contacto'
+    | '/cookies'
+    | '/empresa'
+    | '/gobierno-corporativo'
+    | '/privacidad'
+    | '/proyectos'
+    | '/terminos'
+    | '/empresas/$slug'
+    | '/empresas/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/capacidades'
+    | '/contacto'
+    | '/cookies'
+    | '/empresa'
+    | '/gobierno-corporativo'
+    | '/privacidad'
+    | '/proyectos'
+    | '/terminos'
+    | '/empresas/$slug'
+    | '/empresas'
+  id:
+    | '__root__'
+    | '/'
+    | '/capacidades'
+    | '/contacto'
+    | '/cookies'
+    | '/empresa'
+    | '/gobierno-corporativo'
+    | '/privacidad'
+    | '/proyectos'
+    | '/terminos'
+    | '/empresas/$slug'
+    | '/empresas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CapacidadesRoute: typeof CapacidadesRoute
+  ContactoRoute: typeof ContactoRoute
+  CookiesRoute: typeof CookiesRoute
+  EmpresaRoute: typeof EmpresaRoute
+  GobiernoCorporativoRoute: typeof GobiernoCorporativoRoute
+  PrivacidadRoute: typeof PrivacidadRoute
+  ProyectosRoute: typeof ProyectosRoute
+  TerminosRoute: typeof TerminosRoute
+  EmpresasSlugRoute: typeof EmpresasSlugRoute
+  EmpresasIndexRoute: typeof EmpresasIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +182,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/capacidades': {
+      id: '/capacidades'
+      path: '/capacidades'
+      fullPath: '/capacidades'
+      preLoaderRoute: typeof CapacidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresa': {
+      id: '/empresa'
+      path: '/empresa'
+      fullPath: '/empresa'
+      preLoaderRoute: typeof EmpresaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gobierno-corporativo': {
+      id: '/gobierno-corporativo'
+      path: '/gobierno-corporativo'
+      fullPath: '/gobierno-corporativo'
+      preLoaderRoute: typeof GobiernoCorporativoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/proyectos': {
+      id: '/proyectos'
+      path: '/proyectos'
+      fullPath: '/proyectos'
+      preLoaderRoute: typeof ProyectosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresas/': {
+      id: '/empresas/'
+      path: '/empresas'
+      fullPath: '/empresas/'
+      preLoaderRoute: typeof EmpresasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresas/$slug': {
+      id: '/empresas/$slug'
+      path: '/empresas/$slug'
+      fullPath: '/empresas/$slug'
+      preLoaderRoute: typeof EmpresasSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CapacidadesRoute: CapacidadesRoute,
+  ContactoRoute: ContactoRoute,
+  CookiesRoute: CookiesRoute,
+  EmpresaRoute: EmpresaRoute,
+  GobiernoCorporativoRoute: GobiernoCorporativoRoute,
+  PrivacidadRoute: PrivacidadRoute,
+  ProyectosRoute: ProyectosRoute,
+  TerminosRoute: TerminosRoute,
+  EmpresasSlugRoute: EmpresasSlugRoute,
+  EmpresasIndexRoute: EmpresasIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
