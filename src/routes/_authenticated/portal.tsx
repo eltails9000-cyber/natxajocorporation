@@ -47,7 +47,7 @@ function Portal() {
     e.preventDefault();
     const fd = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
     try {
-      await save({ data: { first_name: fd.first_name, last_name: fd.last_name, company: fd.company, phone: fd.phone, country: fd.country } });
+      await save({ data: { first_name: fd["first_name"] ?? "", last_name: fd["last_name"] ?? "", company: fd["company"] ?? "", phone: fd["phone"] ?? "", country: fd["country"] ?? "" } });
       toast.success("Perfil actualizado");
       acc.refetch();
     } catch {
