@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CapacidadesRouteImport } from './routes/capacidades'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as CookiesRouteImport } from './routes/cookies'
@@ -17,13 +19,25 @@ import { Route as EmpresaRouteImport } from './routes/empresa'
 import { Route as GobiernoCorporativoRouteImport } from './routes/gobierno-corporativo'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as ProyectosRouteImport } from './routes/proyectos'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TerminosRouteImport } from './routes/terminos'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
 import { Route as EmpresasIndexRouteImport } from './routes/empresas.index'
 import { Route as EmpresasSlugRouteImport } from './routes/empresas.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CapacidadesRoute = CapacidadesRouteImport.update({
@@ -61,10 +75,25 @@ const ProyectosRoute = ProyectosRouteImport.update({
   path: '/proyectos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TerminosRoute = TerminosRouteImport.update({
   id: '/terminos',
   path: '/terminos',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPortalRoute = AuthenticatedPortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const EmpresasIndexRoute = EmpresasIndexRouteImport.update({
   id: '/empresas/',
@@ -79,6 +108,7 @@ const EmpresasSlugRoute = EmpresasSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/capacidades': typeof CapacidadesRoute
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
@@ -86,12 +116,16 @@ export interface FileRoutesByFullPath {
   '/gobierno-corporativo': typeof GobiernoCorporativoRoute
   '/privacidad': typeof PrivacidadRoute
   '/proyectos': typeof ProyectosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/portal': typeof AuthenticatedPortalRoute
   '/empresas/$slug': typeof EmpresasSlugRoute
   '/empresas/': typeof EmpresasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/capacidades': typeof CapacidadesRoute
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
@@ -99,13 +133,18 @@ export interface FileRoutesByTo {
   '/gobierno-corporativo': typeof GobiernoCorporativoRoute
   '/privacidad': typeof PrivacidadRoute
   '/proyectos': typeof ProyectosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/portal': typeof AuthenticatedPortalRoute
   '/empresas/$slug': typeof EmpresasSlugRoute
   '/empresas': typeof EmpresasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/capacidades': typeof CapacidadesRoute
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
@@ -113,7 +152,10 @@ export interface FileRoutesById {
   '/gobierno-corporativo': typeof GobiernoCorporativoRoute
   '/privacidad': typeof PrivacidadRoute
   '/proyectos': typeof ProyectosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/portal': typeof AuthenticatedPortalRoute
   '/empresas/$slug': typeof EmpresasSlugRoute
   '/empresas/': typeof EmpresasIndexRoute
 }
@@ -121,6 +163,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/capacidades'
     | '/contacto'
     | '/cookies'
@@ -128,12 +171,16 @@ export interface FileRouteTypes {
     | '/gobierno-corporativo'
     | '/privacidad'
     | '/proyectos'
+    | '/reset-password'
     | '/terminos'
+    | '/admin'
+    | '/portal'
     | '/empresas/$slug'
     | '/empresas/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/capacidades'
     | '/contacto'
     | '/cookies'
@@ -141,12 +188,17 @@ export interface FileRouteTypes {
     | '/gobierno-corporativo'
     | '/privacidad'
     | '/proyectos'
+    | '/reset-password'
     | '/terminos'
+    | '/admin'
+    | '/portal'
     | '/empresas/$slug'
     | '/empresas'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/capacidades'
     | '/contacto'
     | '/cookies'
@@ -154,13 +206,18 @@ export interface FileRouteTypes {
     | '/gobierno-corporativo'
     | '/privacidad'
     | '/proyectos'
+    | '/reset-password'
     | '/terminos'
+    | '/_authenticated/admin'
+    | '/_authenticated/portal'
     | '/empresas/$slug'
     | '/empresas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   CapacidadesRoute: typeof CapacidadesRoute
   ContactoRoute: typeof ContactoRoute
   CookiesRoute: typeof CookiesRoute
@@ -168,6 +225,7 @@ export interface RootRouteChildren {
   GobiernoCorporativoRoute: typeof GobiernoCorporativoRoute
   PrivacidadRoute: typeof PrivacidadRoute
   ProyectosRoute: typeof ProyectosRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TerminosRoute: typeof TerminosRoute
   EmpresasSlugRoute: typeof EmpresasSlugRoute
   EmpresasIndexRoute: typeof EmpresasIndexRoute
@@ -180,6 +238,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/capacidades': {
@@ -231,12 +303,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProyectosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terminos': {
       id: '/terminos'
       path: '/terminos'
       fullPath: '/terminos'
       preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal': {
+      id: '/_authenticated/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof AuthenticatedPortalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/empresas/': {
       id: '/empresas/'
@@ -255,8 +348,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedPortalRoute: AuthenticatedPortalRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   CapacidadesRoute: CapacidadesRoute,
   ContactoRoute: ContactoRoute,
   CookiesRoute: CookiesRoute,
@@ -264,6 +372,7 @@ const rootRouteChildren: RootRouteChildren = {
   GobiernoCorporativoRoute: GobiernoCorporativoRoute,
   PrivacidadRoute: PrivacidadRoute,
   ProyectosRoute: ProyectosRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TerminosRoute: TerminosRoute,
   EmpresasSlugRoute: EmpresasSlugRoute,
   EmpresasIndexRoute: EmpresasIndexRoute,
