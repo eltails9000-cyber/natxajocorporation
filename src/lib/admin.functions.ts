@@ -32,7 +32,7 @@ export const adminUpdateConsultation = createServerFn({ method: "POST" })
     if (data.note) {
       const { error } = await context.supabase
         .from("consultation_notes")
-        .insert({ consultation_id: data.id, author_id: context.userId, note: sec.cleanText(data.note) } as never);
+        .insert({ consultation_id: data.id, author_user_id: context.userId, body: sec.cleanText(data.note) });
       if (error) throw new Error("No se pudo guardar la nota");
     }
     return { ok: true };
