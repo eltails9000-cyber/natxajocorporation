@@ -114,7 +114,7 @@ function Page() {
                   <input type="checkbox" name="consentimiento" className="mt-1" />
                   <span>Acepto el tratamiento de mis datos conforme a la <Link to="/privacidad" className="text-brand underline">política de privacidad</Link>. *</span>
                 </label>
-                {errors.consentimiento && <span className="mt-1.5 block text-xs text-destructive">{errors.consentimiento}</span>}
+                {errors["consentimiento"] && <span className="mt-1.5 block text-xs text-destructive">{errors["consentimiento"]}</span>}
               </div>
               <button type="submit" disabled={sending} className="rounded-sm bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-brand disabled:opacity-60 md:col-span-2 md:justify-self-start">
                 {sending ? "Enviando…" : "Enviar consulta"}

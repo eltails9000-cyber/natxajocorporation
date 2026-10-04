@@ -17,7 +17,7 @@ export const ensureAccount = createServerFn({ method: "POST" })
       const meta = (user.user_metadata ?? {}) as Record<string, string>;
       const ins = await db
         .from("profiles")
-        .insert({ user_id: user.id, first_name: meta.first_name?.slice(0, 80) ?? null, last_name: meta.last_name?.slice(0, 80) ?? null })
+        .insert({ user_id: user.id, first_name: meta["first_name"]?.slice(0, 80) ?? null, last_name: meta["last_name"]?.slice(0, 80) ?? null })
         .select("*")
         .single();
       profile = ins.data;
@@ -48,7 +48,8 @@ export const updateProfile = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const sec = await import("./security.server");
     if (!(await sec.rateLimit("account", context.userId))) throw new Error("Demasiadas solicitudes");
-    const clean = Object.fromEntries(Object.entries(data).map(([k, v]) => [k, v ? sec.cleanText(v) : null]));
+    const c = (v: string) => (v ? sec.cleanText(v) : null);
+    const clean = { first_name: c(data.first_name), last_name: c(data.last_name), company: c(data.company), phone: c(data.phone), country: c(data.country) };
     const { error } = await context.supabase.from("profiles").update(clean).eq("user_id", context.userId);
     if (error) throw new Error("No se pudo actualizar el perfil");
     await sec.logSecurityEvent({ userId: context.userId, type: "profile_updated" });
