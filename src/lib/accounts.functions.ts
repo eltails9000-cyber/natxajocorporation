@@ -58,7 +58,7 @@ export const updateProfile = createServerFn({ method: "POST" })
 
 export const logAccountEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ type: z.enum(["login", "logout", "password_changed"]) }).parse(d))
+  .inputValidator((d: unknown) => z.object({ type: z.enum(["login", "logout", "password_changed", "mfa_enabled", "mfa_disabled", "failed_mfa"]) }).parse(d))
   .handler(async ({ data, context }) => {
     const sec = await import("./security.server");
     if (!(await sec.rateLimit("account", context.userId))) return { ok: false };
@@ -76,4 +76,42 @@ export const getMySecurityEvents = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(20);
     return data ?? [];
+  });
+
+/** Permanently deletes the caller's account after server-side password re-authentication.
+ *  Consultations are kept (business record) but personal data is anonymized. */
+export const deleteMyAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ password: z.string().min(1).max(200), confirm: z.literal("ELIMINAR") }).parse(d))
+  .handler(async ({ data, context }) => {
+    const sec = await import("./security.server");
+    if (!(await sec.rateLimit("login", `del:${context.userId}`))) return { ok: false as const, error: "Demasiados intentos. Inténtelo más tarde." };
+    const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+    const { data: u } = await db.auth.admin.getUserById(context.userId);
+    const email = u.user?.email;
+    if (!email) return { ok: false as const, error: "Cuenta no encontrada" };
+    const { data: roles } = await db.from("user_roles").select("role").eq("user_id", context.userId);
+    if ((roles ?? []).some((r) => r.role === "super_admin")) return { ok: false as const, error: "Un SUPER_ADMIN no puede eliminar su cuenta desde el portal." };
+
+    // Re-authenticate with an isolated, non-persistent client.
+    const { createClient } = await import("@supabase/supabase-js");
+    const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+    const probe = createClient(process.env["SUPABASE_URL"]!, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    const { error: authErr } = await probe.auth.signInWithPassword({ email, password: data.password });
+    if (authErr) {
+      await sec.logSecurityEvent({ userId: context.userId, type: "account_delete_failed_reauth" });
+      return { ok: false as const, error: "Contraseña incorrecta." };
+    }
+    await probe.auth.signOut().catch(() => {});
+
+    await db.from("consultations").update({
+      user_id: null, name: "Anonimizado", last_name: "Anonimizado", company: null,
+      email: `anon-${context.userId.slice(0, 8)}@invalid.local`, phone: null, country: null, anonymized_at: new Date().toISOString(),
+    }).eq("user_id", context.userId);
+    await db.from("user_roles").delete().eq("user_id", context.userId);
+    await db.from("profiles").delete().eq("user_id", context.userId);
+    await sec.logSecurityEvent({ userId: null, actorUserId: null, type: "account_deleted", detail: `user ${context.userId.slice(0, 8)}…` });
+    const { error } = await db.auth.admin.deleteUser(context.userId);
+    if (error) return { ok: false as const, error: "No se pudo eliminar la cuenta." };
+    return { ok: true as const };
   });
