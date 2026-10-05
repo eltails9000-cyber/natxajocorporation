@@ -112,3 +112,41 @@ export const adminListEvents = createServerFn({ method: "GET" })
       .limit(200);
     return data ?? [];
   });
+
+export const adminGetSettings = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const sec = await import("./security.server");
+    const { db, isSuper } = await sec.requireStaff(context);
+    const { data } = await db.from("app_settings").select("key, value, updated_at");
+    return { isSuper, requireAdminMfa: (data ?? []).some((s) => s.key === "require_admin_mfa" && s.value === true) };
+  });
+
+export const adminSetSetting = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ key: z.enum(["require_admin_mfa"]), value: z.boolean() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const sec = await import("./security.server");
+    const { db } = await sec.requireStaff(context, { superAdmin: true });
+    if (data.value && context.claims?.aal !== "aal2") throw new Error("Active y verifique su propio MFA antes de exigirlo.");
+    const { error } = await db.from("app_settings").upsert({ key: data.key, value: data.value, updated_by: context.userId, updated_at: new Date().toISOString() });
+    if (error) throw new Error("No se pudo guardar");
+    await sec.logSecurityEvent({ userId: context.userId, actorUserId: context.userId, type: "setting_changed", detail: `${data.key}=${data.value}` });
+    return { ok: true };
+  });
+
+export const adminRevokeSessions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ userId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const sec = await import("./security.server");
+    const { db, isSuper } = await sec.requireStaff(context);
+    const { data: target } = await db.from("user_roles").select("role").eq("user_id", data.userId);
+    if ((target ?? []).some((r) => r.role === "admin" || r.role === "super_admin") && !isSuper) throw new Error("Solo SUPER_ADMIN");
+    // Short ban then unban invalidates refresh tokens; status stays as is.
+    const { data: p } = await db.from("profiles").select("account_status").eq("user_id", data.userId).maybeSingle();
+    await db.auth.admin.updateUserById(data.userId, { ban_duration: "1s" });
+    if ((p?.account_status ?? "active") === "active") await db.auth.admin.updateUserById(data.userId, { ban_duration: "none" });
+    await sec.logSecurityEvent({ userId: data.userId, actorUserId: context.userId, type: "sessions_revoked" });
+    return { ok: true };
+  });

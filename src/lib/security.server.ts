@@ -8,7 +8,7 @@ export const RATE_LIMITS = {
   signup: [5, 3600],
   password_reset: [5, 3600],
   failed_login_log: [30, 900],
-  admin: [300, 300],
+  admin: [120, 60],
   account: [60, 300],
 } as const satisfies Record<string, readonly [number, number]>;
 export type RateLimitBucket = keyof typeof RATE_LIMITS;

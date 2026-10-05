@@ -9,6 +9,7 @@ import { ensureAccount, getMySecurityEvents, logAccountEvent, updateProfile } fr
 import { getMyConsultations } from "@/lib/consultations.functions";
 import { ROLE_LABELS, SECURITY_EVENT_LABELS, STATUS_LABELS, type AppRole, type ConsultationStatus } from "@/lib/areas";
 import { passwordProblem } from "../auth";
+import { DeleteAccountCard, MfaCard } from "@/components/portal/SecurityExtras";
 
 export const Route = createFileRoute("/_authenticated/portal")({
   head: () => ({ meta: seo("Mi cuenta | NATXAJO CORPORATION", "Portal corporativo: perfil, consultas y seguridad de su cuenta.") }),
@@ -139,6 +140,8 @@ function Portal() {
                 {!events.data?.length && <li className="py-2 text-muted-foreground">Sin actividad registrada.</li>}
               </ul>
             </div>
+            <MfaCard />
+            <DeleteAccountCard />
           </div>
         )}
       </Container>

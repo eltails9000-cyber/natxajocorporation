@@ -62,4 +62,6 @@ export const SECURITY_EVENT_LABELS: Record<string, string> = {
   email_force_verified: "Verificación forzada",
   account_deleted: "Cuenta eliminada",
   setting_changed: "Configuración cambiada",
+  failed_mfa: "Código MFA incorrecto",
+  account_delete_failed_reauth: "Eliminación rechazada (contraseña)",
 };

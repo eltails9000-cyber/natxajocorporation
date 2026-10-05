@@ -2,6 +2,17 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
+import { supabase } from "@/integrations/supabase/client";
+
+function useSignedIn() {
+  const [v, setV] = useState(false);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setV(!!data.session));
+    const { data } = supabase.auth.onAuthStateChange((_e, s) => setV(!!s));
+    return () => data.subscription.unsubscribe();
+  }, []);
+  return v;
+}
 
 export const navItems = [
   { to: "/", label: "Inicio" },
@@ -16,6 +27,7 @@ export const navItems = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const signedIn = useSignedIn();
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 12);
     on();
@@ -42,6 +54,7 @@ export function Navbar() {
               {n.label}
             </Link>
           ))}
+          <Link to={signedIn ? "/portal" : "/auth"} className="text-sm text-muted-foreground hover:text-foreground">{signedIn ? "Mi portal" : "Acceder"}</Link>
           <Link to="/contacto" className="rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-brand">
             Contactar
           </Link>
@@ -50,12 +63,12 @@ export function Navbar() {
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
-      {open && <MobileMenu onNavigate={() => setOpen(false)} />}
+      {open && <MobileMenu signedIn={signedIn} onNavigate={() => setOpen(false)} />}
     </header>
   );
 }
 
-function MobileMenu({ onNavigate }: { onNavigate: () => void }) {
+function MobileMenu({ onNavigate, signedIn }: { onNavigate: () => void; signedIn: boolean }) {
   return (
     <nav className="animate-rise border-t bg-card px-5 pb-6 xl:hidden" aria-label="Móvil">
       {navItems.map((n) => (
@@ -64,6 +77,7 @@ function MobileMenu({ onNavigate }: { onNavigate: () => void }) {
           {n.label}
         </Link>
       ))}
+      <Link to={signedIn ? "/portal" : "/auth"} onClick={onNavigate} className="block border-b py-3.5 text-base text-foreground">{signedIn ? "Mi portal" : "Acceder"}</Link>
       <Link to="/contacto" onClick={onNavigate} className="mt-5 block rounded-sm bg-primary py-3 text-center text-sm font-medium text-primary-foreground">
         Contactar
       </Link>
