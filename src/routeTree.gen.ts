@@ -16,9 +16,11 @@ import { Route as CapacidadesRouteImport } from './routes/capacidades'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as EmpresaRouteImport } from './routes/empresa'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as GobiernoCorporativoRouteImport } from './routes/gobierno-corporativo'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as ProyectosRouteImport } from './routes/proyectos'
+import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -60,6 +62,11 @@ const EmpresaRoute = EmpresaRouteImport.update({
   path: '/empresa',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GobiernoCorporativoRoute = GobiernoCorporativoRouteImport.update({
   id: '/gobierno-corporativo',
   path: '/gobierno-corporativo',
@@ -73,6 +80,11 @@ const PrivacidadRoute = PrivacidadRouteImport.update({
 const ProyectosRoute = ProyectosRouteImport.update({
   id: '/proyectos',
   path: '/proyectos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistroRoute = RegistroRouteImport.update({
+  id: '/registro',
+  path: '/registro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -113,9 +125,11 @@ export interface FileRoutesByFullPath {
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
   '/empresa': typeof EmpresaRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gobierno-corporativo': typeof GobiernoCorporativoRoute
   '/privacidad': typeof PrivacidadRoute
   '/proyectos': typeof ProyectosRoute
+  '/registro': typeof RegistroRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -130,9 +144,11 @@ export interface FileRoutesByTo {
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
   '/empresa': typeof EmpresaRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gobierno-corporativo': typeof GobiernoCorporativoRoute
   '/privacidad': typeof PrivacidadRoute
   '/proyectos': typeof ProyectosRoute
+  '/registro': typeof RegistroRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -149,9 +165,11 @@ export interface FileRoutesById {
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
   '/empresa': typeof EmpresaRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gobierno-corporativo': typeof GobiernoCorporativoRoute
   '/privacidad': typeof PrivacidadRoute
   '/proyectos': typeof ProyectosRoute
+  '/registro': typeof RegistroRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -168,9 +186,11 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/cookies'
     | '/empresa'
+    | '/forgot-password'
     | '/gobierno-corporativo'
     | '/privacidad'
     | '/proyectos'
+    | '/registro'
     | '/reset-password'
     | '/terminos'
     | '/admin'
@@ -185,9 +205,11 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/cookies'
     | '/empresa'
+    | '/forgot-password'
     | '/gobierno-corporativo'
     | '/privacidad'
     | '/proyectos'
+    | '/registro'
     | '/reset-password'
     | '/terminos'
     | '/admin'
@@ -203,9 +225,11 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/cookies'
     | '/empresa'
+    | '/forgot-password'
     | '/gobierno-corporativo'
     | '/privacidad'
     | '/proyectos'
+    | '/registro'
     | '/reset-password'
     | '/terminos'
     | '/_authenticated/admin'
@@ -222,9 +246,11 @@ export interface RootRouteChildren {
   ContactoRoute: typeof ContactoRoute
   CookiesRoute: typeof CookiesRoute
   EmpresaRoute: typeof EmpresaRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   GobiernoCorporativoRoute: typeof GobiernoCorporativoRoute
   PrivacidadRoute: typeof PrivacidadRoute
   ProyectosRoute: typeof ProyectosRoute
+  RegistroRoute: typeof RegistroRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TerminosRoute: typeof TerminosRoute
   EmpresasSlugRoute: typeof EmpresasSlugRoute
@@ -282,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmpresaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gobierno-corporativo': {
       id: '/gobierno-corporativo'
       path: '/gobierno-corporativo'
@@ -301,6 +334,13 @@ declare module '@tanstack/react-router' {
       path: '/proyectos'
       fullPath: '/proyectos'
       preLoaderRoute: typeof ProyectosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registro': {
+      id: '/registro'
+      path: '/registro'
+      fullPath: '/registro'
+      preLoaderRoute: typeof RegistroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -369,9 +409,11 @@ const rootRouteChildren: RootRouteChildren = {
   ContactoRoute: ContactoRoute,
   CookiesRoute: CookiesRoute,
   EmpresaRoute: EmpresaRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   GobiernoCorporativoRoute: GobiernoCorporativoRoute,
   PrivacidadRoute: PrivacidadRoute,
   ProyectosRoute: ProyectosRoute,
+  RegistroRoute: RegistroRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TerminosRoute: TerminosRoute,
   EmpresasSlugRoute: EmpresasSlugRoute,
