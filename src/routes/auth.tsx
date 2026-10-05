@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Container, seo } from "@/components/site/blocks";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): { mode?: Mode } => (s.mode === "signup" || s.mode === "forgot" ? { mode: s.mode } : {}),
+  validateSearch: (s: Record<string, unknown>): { mode?: Mode } => (s["mode"] === "signup" || s["mode"] === "forgot" ? { mode: s["mode"] } : {}),
   head: () => ({ meta: seo("Acceso | NATXAJO CORPORATION", "Inicie sesión o cree su cuenta en el portal corporativo de NATXAJO CORPORATION.") }),
   component: AuthPage,
 });
