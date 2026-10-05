@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Container, seo } from "@/components/site/blocks";
-import { adminListConsultations, adminListEvents, adminListUsers, adminSetRole, adminSetStatus, adminUpdateConsultation } from "@/lib/admin.functions";
+import { adminGetSettings, adminRevokeSessions, adminSetSetting, adminListConsultations, adminListEvents, adminListUsers, adminSetRole, adminSetStatus, adminUpdateConsultation } from "@/lib/admin.functions";
 import { CONSULTATION_STATUSES, ROLES, ROLE_LABELS, SECURITY_EVENT_LABELS, STATUS_LABELS, type ConsultationStatus } from "@/lib/areas";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -16,7 +16,7 @@ const fmt = (d: string) => new Date(d).toLocaleString("es-PE", { dateStyle: "sho
 const sel = "rounded-sm border border-input bg-card px-2 py-1.5 text-xs";
 
 function Admin() {
-  const [tab, setTab] = useState<"consultas" | "usuarios" | "auditoria">("consultas");
+  const [tab, setTab] = useState<"consultas" | "usuarios" | "auditoria" | "config">("consultas");
   const listC = useServerFn(adminListConsultations);
   const cons = useQuery({ queryKey: ["admin-cons"], queryFn: () => listC(), retry: false });
 
@@ -34,14 +34,20 @@ function Admin() {
       <Container className="max-w-[90rem]">
         <p className="eyebrow text-brand">Administración</p>
         <h1 className="mt-2 text-3xl font-semibold">Panel administrativo</h1>
+        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+          {(["NEW", "IN_REVIEW", "IN_PROGRESS", "CLOSED"] as const).map((s) => (
+            <div key={s} className="border bg-card p-4"><p className="eyebrow text-muted-foreground">{STATUS_LABELS[s]}</p><p className="mt-2 text-2xl font-semibold">{(cons.data ?? []).filter((c) => c.status === s).length}</p></div>
+          ))}
+        </div>
         <div className="mt-6 flex gap-6 border-b text-sm">
-          {([["consultas", "Consultas"], ["usuarios", "Usuarios"], ["auditoria", "Auditoría"]] as const).map(([k, l]) => (
+          {([["consultas", "Consultas"], ["usuarios", "Usuarios"], ["auditoria", "Auditoría"], ["config", "Configuración"]] as const).map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)} className={`-mb-px border-b-2 pb-3 ${tab === k ? "border-brand" : "border-transparent text-muted-foreground"}`}>{l}</button>
           ))}
         </div>
         {tab === "consultas" && <Consultas rows={cons.data ?? []} refetch={() => cons.refetch()} />}
         {tab === "usuarios" && <Usuarios />}
         {tab === "auditoria" && <Auditoria />}
+        {tab === "config" && <Config />}
       </Container>
     </section>
   );
@@ -117,6 +123,7 @@ function Usuarios() {
   const list = useServerFn(adminListUsers);
   const setRole = useServerFn(adminSetRole);
   const setStatus = useServerFn(adminSetStatus);
+  const revoke = useServerFn(adminRevokeSessions);
   const users = useQuery({ queryKey: ["admin-users"], queryFn: () => list() });
   const run = async (p: Promise<unknown>) => {
     try { await p; toast.success("Actualizado"); users.refetch(); } catch (e) { toast.error((e as Error).message); }
@@ -148,6 +155,7 @@ function Usuarios() {
                 <select value={u.status} disabled={u.id === me} onChange={(e) => run(setStatus({ data: { userId: u.id, status: e.target.value as "active" | "suspended" | "blocked" } }))} className={sel}>
                   <option value="active">Activa</option><option value="suspended">Suspendida</option><option value="blocked">Bloqueada</option>
                 </select>
+                {u.id !== me && <button onClick={() => run(revoke({ data: { userId: u.id } }))} className="ml-2 text-[10px] text-muted-foreground underline">Cerrar sesiones</button>}
               </td>
             </tr>
           ))}
@@ -171,5 +179,22 @@ function Auditoria() {
       ))}
       {!ev.data?.length && <li className="p-6 text-muted-foreground">Sin eventos.</li>}
     </ul>
+  );
+}
+
+function Config() {
+  const get = useServerFn(adminGetSettings);
+  const set = useServerFn(adminSetSetting);
+  const q = useQuery({ queryKey: ["admin-settings"], queryFn: () => get() });
+  if (!q.data) return <p className="mt-6 text-sm text-muted-foreground">Cargando…</p>;
+  const on = q.data.settings["require_admin_mfa"] === true;
+  return (
+    <div className="mt-6 max-w-xl border bg-card p-6 text-sm">
+      <h2 className="font-semibold">Exigir MFA a administradores</h2>
+      <p className="mt-1 text-muted-foreground">Cuando está activo, el panel solo es accesible con verificación en dos pasos. Active primero su propio MFA en el portal.</p>
+      <button disabled={!q.data.isSuper} onClick={async () => { try { await set({ data: { key: "require_admin_mfa", value: !on } }); toast.success("Guardado"); q.refetch(); } catch (e) { toast.error((e as Error).message); } }}
+        className="mt-4 rounded-sm bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50">{on ? "Desactivar" : "Activar"}</button>
+      {!q.data.isSuper && <p className="mt-2 text-xs text-muted-foreground">Solo SUPER_ADMIN puede cambiar esta configuración.</p>}
+    </div>
   );
 }
