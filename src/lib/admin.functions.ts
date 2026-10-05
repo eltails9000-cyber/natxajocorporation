@@ -119,7 +119,7 @@ export const adminGetSettings = createServerFn({ method: "GET" })
     const sec = await import("./security.server");
     const { db, isSuper } = await sec.requireStaff(context);
     const { data } = await db.from("app_settings").select("key, value, updated_at");
-    return { isSuper, settings: Object.fromEntries((data ?? []).map((s) => [s.key, s.value])) as Record<string, unknown> };
+    return { isSuper, requireAdminMfa: (data ?? []).some((s) => s.key === "require_admin_mfa" && s.value === true) };
   });
 
 export const adminSetSetting = createServerFn({ method: "POST" })

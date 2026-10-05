@@ -187,7 +187,7 @@ function Config() {
   const set = useServerFn(adminSetSetting);
   const q = useQuery({ queryKey: ["admin-settings"], queryFn: () => get() });
   if (!q.data) return <p className="mt-6 text-sm text-muted-foreground">Cargando…</p>;
-  const on = q.data.settings["require_admin_mfa"] === true;
+  const on = q.data.requireAdminMfa;
   return (
     <div className="mt-6 max-w-xl border bg-card p-6 text-sm">
       <h2 className="font-semibold">Exigir MFA a administradores</h2>
