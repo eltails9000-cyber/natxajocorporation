@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";
-import { companies, getCompany, PENDING } from "@/lib/companies";
-import { Container, CompanyCard, CTASection, PageHero, Pending, Reveal, SectionHeader, seo } from "@/components/site/blocks";
+import { companies, getCompany } from "@/lib/companies";
+import { Container, CompanyCard, CTASection, PageHero, Reveal, SectionHeader, seo } from "@/components/site/blocks";
 
 export const Route = createFileRoute("/empresas/$slug")({
   loader: ({ params }) => {
@@ -31,7 +31,8 @@ function List({ title, items }: { title: string; items: string[] }) {
 
 function Page() {
   const { slug } = Route.useLoaderData();
-  const c = getCompany(slug)!;
+  const c = getCompany(slug);
+  if (!c) throw notFound();
   const Icon = c.icon;
   const related = companies.filter((x) => x.pillar === c.pillar && x.slug !== c.slug).slice(0, 3);
   return (
@@ -57,7 +58,7 @@ function Page() {
           </div>
           <div>
             <SectionHeader eyebrow="Proyectos relacionados" title="Portafolio" />
-            <div className="mt-8"><Pending text={PENDING} /></div>
+            <p className="mt-8 leading-relaxed text-muted-foreground">La información sobre proyectos de {c.name} se comunica a través del portafolio corporativo, respetando la confidencialidad de cada intervención. Actualmente no hay fichas públicas de proyectos para esta área.</p>
             <Link to="/proyectos" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-brand">Ver proyectos <ArrowRight className="h-4 w-4" /></Link>
           </div>
         </Container>

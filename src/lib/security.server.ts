@@ -13,7 +13,7 @@ export const RATE_LIMITS = {
 } as const satisfies Record<string, readonly [number, number]>;
 export type RateLimitBucket = keyof typeof RATE_LIMITS;
 
-export const ADMIN_NOTIFICATION_EMAIL = "eltails9000@gmail.com";
+export const ADMIN_NOTIFICATION_EMAIL = "natxajosupport@gmail.com";
 export const DEFAULT_SUPER_ADMIN_EMAIL = "eltails9000@gmail.com";
 
 async function sha256(input: string) {
@@ -58,15 +58,22 @@ export async function rateLimit(bucket: RateLimitBucket, identifier: string) {
 
 export async function logSecurityEvent(e: { userId?: string | null; actorUserId?: string | null; type: string; detail?: string }) {
   const db = await admin();
-  const { error } = await db.from("security_events").insert({
+  const { data: event, error } = await db.from("security_events").insert({
     user_id: e.userId ?? null,
     actor_user_id: e.actorUserId ?? null,
     event_type: e.type,
     detail: e.detail?.slice(0, 300) ?? null,
     ip_hash: await getIpHash(),
     user_agent_summary: getUserAgentSummary(),
-  });
+  }).select("id, created_at").single();
   if (error) console.error("security log error", error.message);
+  if (!error && event) {
+    const { notifySecurityEvent } = await import("./notify.server");
+    // The audit record is authoritative; email availability never blocks the action.
+    await notifySecurityEvent({ id: event.id, type: e.type, createdAt: event.created_at, userId: e.userId ?? null }).catch(() => {
+      console.error("Security notification unavailable");
+    });
+  }
 }
 
 /** Strip control characters (keeps newlines/tabs) and trim. Output is always rendered as text. */

@@ -22,23 +22,20 @@ function ProjectCard({ p }: { p: Project }) {
   );
 }
 
-const fields = ["Nombre", "Empresa responsable", "Sector", "Ubicación", "Estado", "Fecha", "Descripción", "Capacidades"];
-
 function Page() {
   return (
     <>
-      <PageHero eyebrow="Proyectos" title="Proyectos" subtitle="Sistema de portafolio preparado para publicar proyectos de las empresas de NATXAJO CORPORATION." crumbs={[{ label: "Proyectos" }]} />
+      <PageHero eyebrow="Proyectos" title="Proyectos" subtitle="Información pública sobre proyectos y ámbitos de intervención de NATXAJO CORPORATION." crumbs={[{ label: "Proyectos" }]} />
       <section className="py-20 md:py-28">
         <Container>
           {projects.length ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{projects.map((p) => <ProjectCard key={p.name} p={p} />)}</div>
           ) : (
             <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-              <SectionHeader eyebrow="Estado" title="Portafolio corporativo en desarrollo." intro="Los proyectos se publicarán una vez que la información sea oficial y verificada." />
-              <div className="grid grid-cols-2 border-l border-t border-dashed">
-                {fields.map((f) => (
-                  <div key={f} className="border-b border-r border-dashed p-5 font-mono text-xs uppercase tracking-wider text-muted-foreground">{f}</div>
-                ))}
+              <SectionHeader eyebrow="Portafolio" title="Información de proyectos" intro="Actualmente no hay fichas públicas de proyectos. La ausencia de publicaciones no constituye una referencia sobre intervenciones, clientes o resultados." />
+              <div className="space-y-5 leading-relaxed text-muted-foreground">
+                <p>La publicación de información de proyectos requiere verificar su alcance y respetar los compromisos de confidencialidad. Solo se incluyen referencias que puedan comunicarse públicamente.</p>
+                <p>Para plantear un requerimiento o solicitar información sobre un área de actividad, utilice los canales de contacto de NATXAJO CORPORATION.</p>
               </div>
             </div>
           )}
