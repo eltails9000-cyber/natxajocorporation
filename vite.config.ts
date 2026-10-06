@@ -8,9 +8,7 @@ export default defineConfig({
     cloudflare({
       viteEnvironment: { name: "ssr" },
     }),
-    tanstackStart({
-      server: { entry: "server" },
-    }),
+    tanstackStart(),
     react(),
   ],
 });

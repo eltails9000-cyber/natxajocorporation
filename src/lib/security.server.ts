@@ -80,7 +80,6 @@ export async function logSecurityEvent(e: { userId?: string | null; actorUserId?
   if (error) console.error("security log error", error.message);
   if (!error && event) {
     const { notifySecurityEvent } = await import("./notify.server");
-    // The audit record is authoritative; email availability never blocks the action.
     await notifySecurityEvent({ id: event.id, type: e.type, createdAt: event.created_at, userId: e.userId ?? null }).catch(() => {
       console.error("Security notification unavailable");
     });
