@@ -21,6 +21,17 @@ async function sha256(input: string) {
   return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+function getRateLimitSalt() {
+  const salt = process.env["RATE_LIMIT_SALT"];
+  if (!salt) {
+    if (process.env["NODE_ENV"] === "production") {
+      throw new Error("RATE_LIMIT_SALT is required in production");
+    }
+    return "development-local-only";
+  }
+  return salt;
+}
+
 /** One-way, salted identifier for the client IP. The raw IP is never stored. */
 export async function getIpHash() {
   const ip =
@@ -28,7 +39,7 @@ export async function getIpHash() {
     getRequestHeader("x-forwarded-for")?.split(",")[0]?.trim() ||
     getRequestHeader("x-real-ip") ||
     "unknown";
-  const salt = process.env["RATE_LIMIT_SALT"] || "natxajo-default-salt";
+  const salt = getRateLimitSalt();
   return (await sha256(`${salt}:${ip}`)).slice(0, 32);
 }
 
