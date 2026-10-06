@@ -132,11 +132,9 @@ export const companies: Company[] = [
 
 export const getCompany = (slug: string) => companies.find((c) => c.slug === slug);
 
-export const PENDING = "Información corporativa en desarrollo.";
-
 /** Configurable corporate contact data. Leave null until officially defined. */
 export const contactInfo = {
-  email: null as string | null,
+  email: "natxajosupport@gmail.com" as string | null,
   phone: null as string | null,
   address: null as string | null,
 };

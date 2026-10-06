@@ -63,7 +63,7 @@ function Page() {
     { icon: Mail, label: "Correo", value: contactInfo.email },
     { icon: Phone, label: "Teléfono", value: contactInfo.phone },
     { icon: MapPin, label: "Dirección", value: contactInfo.address },
-  ];
+  ].filter((i) => i.value);
 
   return (
     <>
@@ -76,7 +76,7 @@ function Page() {
                 <i.icon className="h-5 w-5 text-brand" strokeWidth={1.5} />
                 <div>
                   <p className="eyebrow text-muted-foreground">{i.label}</p>
-                  <p className="mt-1 text-sm">{i.value ?? <span className="font-mono text-muted-foreground">[Pendiente de definir]</span>}</p>
+                  <p className="mt-1 break-words text-sm">{i.value}</p>
                 </div>
               </div>
             ))}

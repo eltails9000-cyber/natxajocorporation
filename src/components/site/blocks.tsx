@@ -129,14 +129,6 @@ export function CTASection({ title = "Hablemos de su próximo requerimiento.", t
   );
 }
 
-export function Pending({ text = "Información corporativa en desarrollo." }: { text?: string }) {
-  return (
-    <div className="flex items-center gap-3 border border-dashed bg-muted/50 px-5 py-4 font-mono text-xs uppercase tracking-wider text-muted-foreground">
-      <span className="h-2 w-2 bg-brand" /> {text}
-    </div>
-  );
-}
-
 export function CapabilityCard({ title, items, icon: Icon }: { title: string; items: string[]; icon: React.ComponentType<{ className?: string; strokeWidth?: number }> }) {
   return (
     <div className="h-full border bg-card p-8">
