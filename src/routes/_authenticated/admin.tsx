@@ -95,7 +95,7 @@ function Consultas({ rows, refetch }: { rows: Row[]; refetch: () => void }) {
                 <p className="text-xs text-muted-foreground">{r.name} {r.last_name} · {r.email}</p>
               </button>
               <div className="flex items-center gap-2">
-                {r.notification_status !== "sent" && <span className="text-[10px] uppercase text-muted-foreground">correo: {r.notification_status === "pending_domain" ? "pendiente" : r.notification_status}</span>}
+                <span className="text-[10px] uppercase text-muted-foreground">correo: {r.notification_status === "sent" ? "enviado" : r.notification_status === "failed" ? "fallido" : "pendiente"}</span>
                 <select value={r.status} onChange={(e) => act(r.id, { status: e.target.value as ConsultationStatus })} className={sel}>
                   {CONSULTATION_STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
                 </select>
