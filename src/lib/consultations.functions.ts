@@ -53,7 +53,7 @@ export const submitConsultation = createServerFn({ method: "POST" })
         subject: sec.cleanText(data.asunto),
         message: sec.cleanText(data.mensaje),
       })
-      .select("id, public_id, name, last_name, company, email, phone, country, area, subject, message, created_at")
+      .select("id, public_id, name, last_name, company, email, phone, country, area, subject, message, status, created_at")
       .single();
     if (error || !row) {
       console.error("consultation insert failed", error?.message);
